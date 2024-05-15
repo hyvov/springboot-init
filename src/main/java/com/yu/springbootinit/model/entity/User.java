@@ -10,8 +10,8 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户
  *
+ * 用户
  *
  */
 @TableName(value = "user")
@@ -80,6 +80,6 @@ public class User implements Serializable {
     @TableLogic
     private Integer isDelete;
 
-    @TableField(exist = false)
+    @TableField(exist = false)//该注解于标注字段serialVersionUID在数据库表中不存在，告诉MyBatis-Plus框架该字段不对应数据库表中的列。
     private static final long serialVersionUID = 1L;
 }

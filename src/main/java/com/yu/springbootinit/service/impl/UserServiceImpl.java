@@ -31,15 +31,27 @@ import org.springframework.util.DigestUtils;
  *
  *
  */
-@Service
-@Slf4j
+@Service  // 标识为Spring的服务类
+@Slf4j  // 使用Lombok提供的日志注解，自动创建日志对象
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
+/**
+ *  ServiceImpl<UserMapper, User> 是 MyBatis-Plus 提供的服务实现类，
+ * 它提供了许多数据库操作方法，包括条件构造器，用于构建数据库查询、更新等操作的条件。
+ */
     /**
      * 盐值，混淆密码
      */
     public static final String SALT = "yu";
 
+    /**
+     * 用户注册
+     *
+     * @param userAccount   用户账户
+     * @param userPassword  用户密码
+     * @param checkPassword 校验密码
+     * @return 新用户 id
+     * @throws BusinessException 当参数为空、用户账号过短、用户密码过短、两次输入的密码不一致、账号重复或数据库错误时抛出异常
+     */
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -49,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (userAccount.length() < 4) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
-        if (userPassword.length() < 8 || checkPassword.length() < 8) {
+        if (userPassword.length() < 6|| checkPassword.length() < 6) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         // 密码和校验密码相同
@@ -78,6 +90,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
+    /**
+     * 用户登录
+     *
+     * @param userAccount  用户账户
+     * @param userPassword 用户密码
+     * @param request      HTTP请求对象
+     * @return 脱敏后的用户信息
+     * @throws BusinessException 当参数为空、账号错误、密码错误、用户不存在或密码错误时抛出异常
+     */
     @Override
     public LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
